@@ -1,3 +1,5 @@
 venv/
 .idea/
 webdriver/
+*.pyc
+db.sqlite3
