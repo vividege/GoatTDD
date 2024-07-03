@@ -34,7 +34,8 @@ class NewVisitorTest(unittest.TestCase):
 
         table = self.browser.find_element(By.ID, 'id_list_table')
         rows = table.find_elements(By.TAG_NAME, 'tr')
-        self.assertTrue(any(row.text == '1: Buy peacock feathers' for row in rows))
+        self.assertTrue(any(row.text == '1: Buy peacock feathers' for row in rows),
+                        "New to-do item did not appear in table")
 
         self.fail('Finish the test!')  # The test will fail anyway, use this way to inform that the test is complete
 
