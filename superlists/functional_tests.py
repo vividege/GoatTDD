@@ -1,10 +1,10 @@
+import time
 import unittest
 
 from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+
 
 class NewVisitorTest(unittest.TestCase):
     def setUp(self) -> None:
@@ -14,6 +14,12 @@ class NewVisitorTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.browser.quit()
+
+    def check_for_row_in_list_table(self, row_text):
+        time.sleep(0.5)
+        table = self.browser.find_element(By.ID, 'id_list_table')
+        rows = table.find_elements(By.TAG_NAME, 'tr')
+        self.assertIn(row_text, [row.text for row in rows])
 
     def test_can_start_a_list_and_retrieve_it_later(self):
         self.browser.get("http://localhost:8000")
@@ -32,10 +38,7 @@ class NewVisitorTest(unittest.TestCase):
         # 她按回车键后，页面更新了
         # 待办事项表格中显示了“1: Buy peacock feathers”
         inputbox.send_keys(Keys.ENTER)
-
-        table = self.browser.find_element(By.ID, 'id_list_table')
-        rows = self.browser.find_elements(By.TAG_NAME, 'tr')
-        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
+        self.check_for_row_in_list_table('1: Buy peacock feathers')
 
         # 页面中还有一个文本框，可以输入其他的待办事项
         # 她输入了“Use peacock feathers to make a fly”（使用孔雀羽毛做假蝇）
@@ -43,12 +46,9 @@ class NewVisitorTest(unittest.TestCase):
         inputbox = self.browser.find_element(By.ID, 'id_new_item')
         inputbox.send_keys("Use peacock feathers to make a fly")
         inputbox.send_keys(Keys.ENTER)
-        import time
-        time.sleep(0.5)
-        # rows = WebDriverWait(self.browser, 10).until(EC.presence_of_all_elements_located((By.TAG_NAME, 'tr')))
-        rows = self.browser.find_elements(By.TAG_NAME, 'tr')
-        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
-        self.assertIn('2: Use peacock feathers to make a fly', [row.text for row in rows])
+
+        self.check_for_row_in_list_table('1: Buy peacock feathers')
+        self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
 
         # 伊迪丝想知道这个网站是否会记住她的清单
         # 她看到网站为她生成了一个唯一的URL
