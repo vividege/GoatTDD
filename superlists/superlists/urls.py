@@ -17,9 +17,9 @@ Including another URLconf
     urls.py文件定义如何把URL映射到视图函数上
 """
 from django.urls import re_path
-from lists.views import home_page
+from lists.views import home_page, view_list
 
 urlpatterns = [
-    re_path('^$', home_page, name='home'),
-    # re_path(r'^admin/', admin.site.urls),
+    re_path(r'^$', home_page, name='home'),
+    re_path(r'^lists/the-only-list-in-the-world/$', view_list, name='view_list'),
 ]
