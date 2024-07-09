@@ -1,4 +1,3 @@
-from django.http import HttpRequest
 from django.test import TestCase
 # from django.core.urlresolvers import resolve # depreated since Django 1.9
 from django.urls import resolve
@@ -6,7 +5,28 @@ from lists.models import Item
 from lists.views import home_page
 
 
-# Create your tests here.
+class NewListTest(TestCase):
+    def test_saving_a_POST_request(self):
+        self.client.post(
+            '/lists/new',
+            data={'item_text': 'A new list item'}
+        )
+        self.assertEqual(Item.objects.count(), 1)  # check a newly added item is in DB
+        new_item = Item.objects.first()  # == objects.all()[0]
+        self.assertEqual(new_item.text, 'A new list item')
+
+    def test_redirects_after_POST(self):
+        response = self.client.post(
+            '/lists/new',
+            data={'item_text': 'A new list item'}
+        )
+
+        # after post, the page needs to be redirected
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
+        self.assertRedirects(response, '/lists/the-only-list-in-the-world/')
+
+
 class HomePageTest(TestCase):
     def test_root_url_resolves_to_home_page_view(self):
         found = resolve('/')
@@ -33,33 +53,6 @@ class HomePageTest(TestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'home.html')
-
-    def test_home_page_can_save_a_POST_request(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['item_text'] = 'A new list item'
-
-        response = home_page(request)
-
-        self.assertEqual(Item.objects.count(), 1)  # check a newly added item is in DB
-        new_item = Item.objects.first()  # == objects.all()[0]
-        self.assertEqual(new_item.text, 'A new list item')
-
-    def test_home_page_redirects_after_POST(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['item_text'] = 'A new list item'
-
-        response = home_page(request)
-
-        # after post, the page needs to be redirected
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
-
-    def test_home_page_only_save_items_when_necessary(self):
-        request = HttpRequest()
-        home_page(request)
-        self.assertEqual(Item.objects.count(), 0)
 
 
 class ItemModelTest(TestCase):
