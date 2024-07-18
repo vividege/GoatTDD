@@ -16,11 +16,12 @@ Including another URLconf
 
     urls.py文件定义如何把URL映射到视图函数上
 """
-from django.urls import re_path, include
-from lists.views import home_page
-
+from django.urls import re_path
+from lists.views import home_page, view_list, new_list, add_item
 
 urlpatterns = [
     re_path(r'^$', home_page, name='home'),
-    re_path('lists/', include("lists.urls")),
+    re_path(r'^(\d+)/$', view_list, name='view_list'),
+    re_path(r'^(\d+)/add_item$', add_item, name='add_item'),
+    re_path(r'^new$', new_list, name='new_list'),
 ]
