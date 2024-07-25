@@ -3,3 +3,4 @@ venv/
 webdriver/
 *.pyc
 db.sqlite3
+superlists/lists/static/*

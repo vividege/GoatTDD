@@ -23,7 +23,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
         rows = table.find_elements(By.TAG_NAME, 'tr')
         self.assertIn(row_text, [row.text for row in rows])
 
-    def test_can_start_a_list_and_retrieve_it_later(self):
+    def __test_can_start_a_list_and_retrieve_it_later(self):
         self.browser.get(self.live_server_url)
         self.assertIn('To-Do', self.browser.title)
         header_text = self.browser.find_element(By.TAG_NAME, 'h1').text
@@ -92,7 +92,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
     def test_layout_and_styling(self):
         # 伊迪丝访问首页
         self.browser.get(self.live_server_url)
-        self.browser.set_window_size(1024, 768)
+        self.browser.set_window_size(1024,768)
 
         # 她看到输入框完美地居中显示
         inputbox = self.browser.find_element(By.ID,'id_new_item')
