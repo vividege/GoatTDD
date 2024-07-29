@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 # from django.core.urlresolvers import resolve # depreated since Django 1.9
 from lists.models import Item, List
@@ -32,3 +33,12 @@ class ListAndItemModelTest(TestCase):
         self.assertEqual(first_saved_item.list, mylist)
         self.assertEqual(second_saved_item.text, 'Item the second')
         self.assertEqual(second_saved_item.list, mylist)
+
+    def test_cannot_save_empty_list(self):
+        mylist = List.objects.create()
+        item = Item(list=mylist, text='')
+        with self.assertRaises(ValidationError):
+            item.save()
+            item.full_clean() # Django提供的用于运行全部验证，这个方法就会验证item的text为空，然后报错
+            # 如果text = models.TextField(default=''， blank=True)，blank=True，那么允许字段为空，测试会报错
+
