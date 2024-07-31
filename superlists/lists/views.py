@@ -13,6 +13,9 @@ def home_page(request):
 
 def view_list(request, list_id):
     mylist = List.objects.get(id=list_id)
+    if request.method == 'POST':
+        Item.objects.create(text=request.POST['item_text'], list=mylist)
+        return redirect('/lists/{0}/'.format(mylist.id))
     return render(request, 'list.html', {'list': mylist})
 
 
@@ -26,10 +29,4 @@ def new_list(request):
         mylist.delete()
         error = 'You can\'t have an empty list item'
         return render(request, 'home.html', {"error": error})
-    return redirect(f'/lists/{mylist.id}/')
-
-
-def add_item(request, list_id):
-    mylist = List.objects.get(id=list_id)
-    Item.objects.create(text=request.POST['item_text'], list=mylist)
     return redirect(f'/lists/{mylist.id}/')
