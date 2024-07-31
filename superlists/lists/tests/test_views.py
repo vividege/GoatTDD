@@ -1,9 +1,8 @@
 from django.test import TestCase
 # from django.core.urlresolvers import resolve # depreated since Django 1.9
-from django.urls import resolve
 from django.utils.html import escape
+from lists.forms import ItemForm
 from lists.models import Item, List
-from lists.views import home_page
 
 
 class NewListTest(TestCase):
@@ -43,31 +42,14 @@ class NewListTest(TestCase):
 
 
 class HomePageTest(TestCase):
-    def test_root_url_resolves_to_home_page_view(self):
-        found = resolve('/')
-        self.assertEqual(found.func, home_page)
 
-    def test_home_page_returns_correct_html(self):
-        '''
-        The following code snipt was outdate due to Django version
-        :========================================================:
-
-        request = HttpRequest()
-        response = home_page(request)
-        self.assertTemplateUsed(response, 'home.html')
-        expected_html = render_to_string('home.html', request=request)
-        print(expected_html)
-        result = response.content.decode()
-        print("============")
-        print(result)
-        # self.assertTrue(response.content.startswith(b'<html>'))
-        # self.assertIn(b'<title>To-Do lists</title>', response.content)
-        # self.assertTrue(response.content.endswith(b'</html>'))
-        self.assertEqual(result, expected_html)
-        '''
+    def test_home_page_renders_home_template(self):
         response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'home.html')
+
+    def test_home_page_uses_item_form(self):
+        response = self.client.get('/')
+        self.assertIsInstance(response.context['form'], ItemForm)
 
 
 class ListViewTest(TestCase):
