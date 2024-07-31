@@ -42,3 +42,6 @@ class ListAndItemModelTest(TestCase):
             item.full_clean() # Django提供的用于运行全部验证，这个方法就会验证item的text为空，然后报错
             # 如果text = models.TextField(default=''， blank=True)，blank=True，那么允许字段为空，测试会报错
 
+    def test_get_absolute_url(self):
+        mylist = List.objects.create()
+        self.assertEqual(mylist.get_absolute_url(), '/lists/{0}/'.format(mylist.id))
